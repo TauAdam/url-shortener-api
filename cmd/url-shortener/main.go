@@ -7,6 +7,7 @@ import (
 	"log/slog"
 	"os"
 	"vigilant-octo-spoon/internal/config"
+	middlewarelogger "vigilant-octo-spoon/internal/http_server/middlewares/logger"
 	"vigilant-octo-spoon/internal/storage/sqlite"
 )
 
@@ -25,6 +26,9 @@ func main() {
 	router := chi.NewRouter()
 	router.Use(middleware.RequestID)
 	router.Use(middleware.Logger)
+	router.Use(middlewarelogger.New(logger))
+	router.Use(middleware.Recoverer)
+	router.Use(middleware.URLFormat)
 
 }
 
