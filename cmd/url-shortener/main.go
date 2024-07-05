@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
 	"log/slog"
 	"os"
 	"vigilant-octo-spoon/internal/config"
@@ -20,16 +22,9 @@ func main() {
 		logger.Error("error creating storage", slog.Attr{Key: "error", Value: slog.StringValue(err.Error())})
 		os.Exit(1)
 	}
-
-	id, err := storage.SaveAlias("ex", "example.com")
-	if err != nil {
-		logger.Error("failed to save url text", slog.Attr{Key: "error", Value: slog.StringValue(err.Error())})
-	}
-	logger.Info("saved url text", slog.Int64("id", id))
-	id, err = storage.SaveAlias("ex", "example.com")
-	if err != nil {
-		logger.Error("failed to save url text", slog.Attr{Key: "error", Value: slog.StringValue(err.Error())})
-	}
+	router := chi.NewRouter()
+	router.Use(middleware.RequestID)
+	router.Use(middleware.Logger)
 
 }
 

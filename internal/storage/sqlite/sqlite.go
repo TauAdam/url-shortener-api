@@ -58,3 +58,38 @@ func (s *Storage) SaveAlias(alias, urlText string) (int64, error) {
 	}
 	return id, nil
 }
+
+func (s *Storage) GetUrl(alias string) (string, error) {
+	const op = "storage.sqlite.GetUrl"
+	stmt, err := s.db.Prepare("SELECT url FROM url WHERE alias = ?")
+	if err != nil {
+		return "", fmt.Errorf("%s: %w", op, err)
+	}
+
+	var result string
+	err = stmt.QueryRow(alias).Scan(&result)
+	if errors.Is(err, sql.ErrNoRows) {
+		return "", storage.ErrNotFound
+	}
+	if err != nil {
+		return "", fmt.Errorf("%s: %w", op, err)
+	}
+
+	return result, nil
+}
+
+func (s *Storage) DeleteUrl(alias string) error {
+	const op = "storage.sqlite.DeleteUrl"
+	stmt, err := s.db.Prepare("DELETE FROM url WHERE alias = ?")
+	if err != nil {
+		return fmt.Errorf("%s: %w", op, err)
+	}
+	_, err = stmt.Exec(alias)
+	if errors.Is(err, sql.ErrNoRows) {
+		return storage.ErrNotFound
+	}
+	if err != nil {
+		return fmt.Errorf("%s: %w", op, err)
+	}
+	return nil
+}
