@@ -20,7 +20,17 @@ func main() {
 		logger.Error("error creating storage", slog.Attr{Key: "error", Value: slog.StringValue(err.Error())})
 		os.Exit(1)
 	}
-	_ = storage
+
+	id, err := storage.SaveAlias("ex", "example.com")
+	if err != nil {
+		logger.Error("failed to save url text", slog.Attr{Key: "error", Value: slog.StringValue(err.Error())})
+	}
+	logger.Info("saved url text", slog.Int64("id", id))
+	id, err = storage.SaveAlias("ex", "example.com")
+	if err != nil {
+		logger.Error("failed to save url text", slog.Attr{Key: "error", Value: slog.StringValue(err.Error())})
+	}
+
 }
 
 const (
