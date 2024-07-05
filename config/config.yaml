@@ -1,6 +1,6 @@
 env: "development"
 database_url: "./storage/storage.db"
-http_server:
+http_server_config:
     address: "localhost:5000"
     timeout: 4s
     idle_timeout: 50s

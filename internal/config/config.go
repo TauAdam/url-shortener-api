@@ -1,15 +1,16 @@
 package config
 
 import (
+	"github.com/ilyakaznacheev/cleanenv"
 	"log"
 	"os"
 	"time"
 )
 
 type Config struct {
-	Env         string `yaml:"env" env-required:"true"`
-	DatabaseURL string `yaml:"database_url" env-required:"true"`
-	HttpServerConfig
+	Env              string `yaml:"env" env-required:"true"`
+	DatabaseURL      string `yaml:"database_url" env-required:"true"`
+	HttpServerConfig `yaml:"http_server_config"`
 }
 
 type HttpServerConfig struct {
@@ -18,7 +19,7 @@ type HttpServerConfig struct {
 	IdleTimeout time.Duration `yaml:"idle_timeout" env-required:"true"`
 }
 
-func MustLoadEnv() {
+func MustLoadEnv() *Config {
 	configPath := os.Getenv("CONFIG_PATH")
 	if configPath == "" {
 		log.Fatal("CONFIG_PATH environment variable not set")
@@ -26,4 +27,9 @@ func MustLoadEnv() {
 	if _, err := os.Stat(configPath); os.IsNotExist(err) {
 		log.Fatalf("config file does not exist: %s", configPath)
 	}
+	var cfg Config
+	if err := cleanenv.ReadConfig(configPath, &cfg); err != nil {
+		log.Fatalf("failed to read config: %s", err)
+	}
+	return &cfg
 }
