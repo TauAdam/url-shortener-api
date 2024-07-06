@@ -12,6 +12,7 @@ import (
 	"vigilant-octo-spoon/lib/logger/sl"
 )
 
+//go:generate go run github.com/vektra/mockery/v2 --name=ShortcutDeleter
 type ShortcutDeleter interface {
 	DeleteURL(alias string) error
 }
