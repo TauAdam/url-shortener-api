@@ -5,8 +5,10 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"log/slog"
+	"net/http"
 	"os"
 	"vigilant-octo-spoon/internal/config"
+	"vigilant-octo-spoon/internal/http_server/handlers/alias/save"
 	middlewarelogger "vigilant-octo-spoon/internal/http_server/middlewares/logger"
 	"vigilant-octo-spoon/internal/storage/sqlite"
 	"vigilant-octo-spoon/lib/logger/sl"
@@ -31,6 +33,20 @@ func main() {
 	router.Use(middleware.Recoverer)
 	router.Use(middleware.URLFormat)
 
+	router.Post("/url", save.New(logger, storage))
+
+	logger.Info("starting server on address", slog.String("address", cfg.Address))
+
+	server := &http.Server{
+		Addr:         cfg.Address,
+		Handler:      router,
+		ReadTimeout:  cfg.Timeout,
+		WriteTimeout: cfg.Timeout,
+		IdleTimeout:  cfg.IdleTimeout,
+	}
+	if err := server.ListenAndServe(); err != nil {
+		logger.Error("error starting server", sl.Err(err))
+	}
 }
 
 const (

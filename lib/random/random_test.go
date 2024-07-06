@@ -32,7 +32,7 @@ func TestNewString(t *testing.T) {
 			assert.NotEqual(t, string1, string2)
 
 			for _, char := range string1 {
-				assert.Contains(t, characters, string(char))
+				assert.Contains(t, characters, char)
 			}
 		})
 	}

@@ -7,13 +7,14 @@ import (
 	"github.com/go-playground/validator/v10"
 	"log/slog"
 	"net/http"
+	"vigilant-octo-spoon/internal/storage"
 	"vigilant-octo-spoon/lib/api/response"
 	"vigilant-octo-spoon/lib/logger/sl"
 	"vigilant-octo-spoon/lib/random"
 )
 
-type AliasSaver interface {
-	SaveAlias(alias, urlText string) (int64, error)
+type ShortcutSaver interface {
+	SaveShortcut(alias, urlText string) (int64, error)
 }
 type Request struct {
 	Url   string `json:"url" validate:"required,url"`
@@ -26,7 +27,7 @@ type Response struct {
 
 const AliasLength = 5
 
-func New(logger *slog.Logger, aliasSaver AliasSaver) http.HandlerFunc {
+func New(logger *slog.Logger, shortcutSaver ShortcutSaver) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		const op = "handler.alias.save.New"
 		logger.With(slog.String("op", op), slog.String("request_id", middleware.GetReqID(r.Context())))
@@ -44,8 +45,9 @@ func New(logger *slog.Logger, aliasSaver AliasSaver) http.HandlerFunc {
 			logger.Error("failed to validate request", sl.Err(err))
 
 			var validationErrors validator.ValidationErrors
-			errors.As(err, &validationErrors)
-			render.JSON(w, r, response.ValidationError(validationErrors))
+			if errors.As(err, &validationErrors) {
+				render.JSON(w, r, response.ValidationError(validationErrors))
+			}
 			return
 		}
 
@@ -54,5 +56,21 @@ func New(logger *slog.Logger, aliasSaver AliasSaver) http.HandlerFunc {
 			alias = random.NewString(AliasLength)
 		}
 
+		id, err := shortcutSaver.SaveShortcut(req.Alias, req.Url)
+		if errors.Is(err, storage.ErrAlreadyExists) {
+			logger.Info("URL already exists", slog.String("url", req.Url))
+			render.JSON(w, r, response.Error("URL already exists"))
+			return
+		}
+		if err != nil {
+			logger.Error("failed to save url", sl.Err(err))
+			render.JSON(w, r, response.Error("failed to save url"))
+			return
+		}
+		logger.Info("successfully saved url", slog.Int64("id", id))
+		render.JSON(w, r, Response{
+			Alias:    alias,
+			Response: response.Success(),
+		})
 	}
 }
