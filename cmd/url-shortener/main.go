@@ -35,9 +35,15 @@ func main() {
 	router.Use(middleware.Recoverer)
 	router.Use(middleware.URLFormat)
 
-	router.Post("/url", save.New(logger, storage))
+	router.Route("/url", func(r chi.Router) {
+		r.Use(middleware.BasicAuth(
+			"vigilant-octo-spoon",
+			map[string]string{cfg.HttpServerConfig.User: cfg.HttpServerConfig.Password},
+		))
+		r.Post("/", save.New(logger, storage))
+		r.Delete("/{alias}", deleteURL.New(logger, storage))
+	})
 	router.Get("/{alias}", redirect.New(logger, storage))
-	router.Delete("/{alias}", deleteURL.New(logger, storage))
 
 	logger.Info("starting server on address", slog.String("address", cfg.Address))
 

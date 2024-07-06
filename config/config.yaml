@@ -4,3 +4,5 @@ http_server_config:
     address: "localhost:5000"
     timeout: 4s
     idle_timeout: 50s
+    user: "admin"
+    password: "admin"
