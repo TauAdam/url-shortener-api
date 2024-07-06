@@ -9,6 +9,7 @@ import (
 	"vigilant-octo-spoon/internal/config"
 	middlewarelogger "vigilant-octo-spoon/internal/http_server/middlewares/logger"
 	"vigilant-octo-spoon/internal/storage/sqlite"
+	"vigilant-octo-spoon/lib/logger/sl"
 )
 
 func main() {
@@ -20,7 +21,7 @@ func main() {
 
 	storage, err := sqlite.New(cfg.DatabaseURL)
 	if err != nil {
-		logger.Error("error creating storage", slog.Attr{Key: "error", Value: slog.StringValue(err.Error())})
+		logger.Error("error creating storage", sl.Err(err))
 		os.Exit(1)
 	}
 	router := chi.NewRouter()
