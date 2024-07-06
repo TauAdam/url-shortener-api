@@ -59,8 +59,8 @@ func (s *Storage) SaveShortcut(urlText, alias string) (int64, error) {
 	return id, nil
 }
 
-func (s *Storage) GetUrl(alias string) (string, error) {
-	const op = "storage.sqlite.GetUrl"
+func (s *Storage) GetURL(alias string) (string, error) {
+	const op = "storage.sqlite.GetURL"
 	stmt, err := s.db.Prepare("SELECT url FROM url WHERE alias = ?")
 	if err != nil {
 		return "", fmt.Errorf("%s: %w", op, err)
@@ -78,7 +78,7 @@ func (s *Storage) GetUrl(alias string) (string, error) {
 	return result, nil
 }
 
-func (s *Storage) DeleteUrl(alias string) error {
+func (s *Storage) DeleteURL(alias string) error {
 	const op = "storage.sqlite.DeleteUrl"
 	stmt, err := s.db.Prepare("DELETE FROM url WHERE alias = ?")
 	if err != nil {

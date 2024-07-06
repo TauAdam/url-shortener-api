@@ -38,19 +38,19 @@ func TestSaveHandler(t *testing.T) {
 			name:        "Should Return Error For Empty URL",
 			url:         "",
 			alias:       "new_alias",
-			responseErr: "field URL is required",
+			responseErr: "URL is required",
 		},
 		{
 			name:        "Should Return Error For Invalid URL",
 			url:         "some invalid URL",
 			alias:       "new_alias",
-			responseErr: "field URL is not a URL",
+			responseErr: "URL is not a URL",
 		},
 		{
 			name:        "Should Return Error For Already Existing url",
 			alias:       "new_test_alias",
 			url:         "https://example.com",
-			responseErr: "failed to add url",
+			responseErr: "failed to save url",
 			mockError:   errors.New("URL already exists"),
 		},
 	}

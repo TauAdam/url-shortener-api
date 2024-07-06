@@ -18,7 +18,7 @@ type ShortcutSaver interface {
 	SaveShortcut(urlText, alias string) (int64, error)
 }
 type Request struct {
-	Url   string `json:"url" validate:"required,url"`
+	URL   string `json:"url" validate:"required,url"`
 	Alias string `json:"alias,omitempty"`
 }
 type Response struct {
@@ -57,9 +57,9 @@ func New(logger *slog.Logger, shortcutSaver ShortcutSaver) http.HandlerFunc {
 			alias = random.NewString(AliasLength)
 		}
 
-		id, err := shortcutSaver.SaveShortcut(req.Url, req.Alias)
+		id, err := shortcutSaver.SaveShortcut(req.URL, req.Alias)
 		if errors.Is(err, storage.ErrAlreadyExists) {
-			logger.Info("URL already exists", slog.String("url", req.Url))
+			logger.Info("URL already exists", slog.String("url", req.URL))
 			render.JSON(w, r, response.Error("URL already exists"))
 			return
 		}

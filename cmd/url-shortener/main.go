@@ -8,7 +8,9 @@ import (
 	"net/http"
 	"os"
 	"vigilant-octo-spoon/internal/config"
+	deleteURL "vigilant-octo-spoon/internal/http_server/handlers/alias/delete"
 	"vigilant-octo-spoon/internal/http_server/handlers/alias/save"
+	"vigilant-octo-spoon/internal/http_server/handlers/redirect"
 	middlewarelogger "vigilant-octo-spoon/internal/http_server/middlewares/logger"
 	"vigilant-octo-spoon/internal/storage/sqlite"
 	"vigilant-octo-spoon/lib/logger/sl"
@@ -34,6 +36,8 @@ func main() {
 	router.Use(middleware.URLFormat)
 
 	router.Post("/url", save.New(logger, storage))
+	router.Get("/{alias}", redirect.New(logger, storage))
+	router.Delete("/{alias}", deleteURL.New(logger, storage))
 
 	logger.Info("starting server on address", slog.String("address", cfg.Address))
 
