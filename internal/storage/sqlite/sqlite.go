@@ -36,7 +36,7 @@ func New(dbURL string) (*Storage, error) {
 	return &Storage{db: db}, nil
 }
 
-func (s *Storage) SaveShortcut(alias, urlText string) (int64, error) {
+func (s *Storage) SaveShortcut(urlText, alias string) (int64, error) {
 	const op = "storage.sqlite.SaveShortcut"
 
 	stmt, err := s.db.Prepare("INSERT INTO url (alias, url) VALUES (?, ?)")

@@ -13,8 +13,9 @@ import (
 	"vigilant-octo-spoon/lib/random"
 )
 
+//go:generate go run github.com/vektra/mockery/v2 --name=ShortcutSaver
 type ShortcutSaver interface {
-	SaveShortcut(alias, urlText string) (int64, error)
+	SaveShortcut(urlText, alias string) (int64, error)
 }
 type Request struct {
 	Url   string `json:"url" validate:"required,url"`
@@ -56,7 +57,7 @@ func New(logger *slog.Logger, shortcutSaver ShortcutSaver) http.HandlerFunc {
 			alias = random.NewString(AliasLength)
 		}
 
-		id, err := shortcutSaver.SaveShortcut(req.Alias, req.Url)
+		id, err := shortcutSaver.SaveShortcut(req.Url, req.Alias)
 		if errors.Is(err, storage.ErrAlreadyExists) {
 			logger.Info("URL already exists", slog.String("url", req.Url))
 			render.JSON(w, r, response.Error("URL already exists"))

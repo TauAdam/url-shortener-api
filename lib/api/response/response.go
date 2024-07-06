@@ -7,7 +7,6 @@ import (
 )
 
 type Response struct {
-	Alias  string `json:"alias,omitempty"`
 	Status string `json:"status"`
 	Error  string `json:"error,omitempty"`
 }
@@ -23,6 +22,7 @@ func Success() Response {
 func Error(message string) Response {
 	return Response{
 		Status: StatusError,
+		Error:  message,
 	}
 }
 func ValidationError(errs validator.ValidationErrors) Response {
