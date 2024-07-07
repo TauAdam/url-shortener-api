@@ -31,7 +31,7 @@ const AliasLength = 5
 func New(logger *slog.Logger, shortcutSaver ShortcutSaver) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		const op = "handler.alias.save.New"
-		logger.With(slog.String("op", op), slog.String("request_id", middleware.GetReqID(r.Context())))
+		logger := logger.With(slog.String("op", op), slog.String("request_id", middleware.GetReqID(r.Context())))
 
 		var req Request
 
