@@ -33,7 +33,7 @@ func ValidationError(errs validator.ValidationErrors) Response {
 		case "required":
 			errorMessages = append(errorMessages, fmt.Sprintf("%s is required", err.Field()))
 		case "url":
-			errorMessages = append(errorMessages, fmt.Sprintf("%s is not a URL", err.Field()))
+			errorMessages = append(errorMessages, fmt.Sprintf("%s is not a valid URL", err.Field()))
 		default:
 			errorMessages = append(errorMessages, fmt.Sprintf("%s is invalid", err.Field()))
 		}

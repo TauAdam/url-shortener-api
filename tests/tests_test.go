@@ -1,6 +1,7 @@
 package tests
 
 import (
+	"fmt"
 	"github.com/brianvoe/gofakeit/v7"
 	"github.com/gavv/httpexpect/v2"
 	"github.com/stretchr/testify/require"
@@ -72,6 +73,12 @@ func TestCreateRedirectDelete(t *testing.T) {
 			alias:       gofakeit.Word(),
 			responseErr: "URL is not a valid URL",
 		},
+		{
+			name:        "URL with whitespace",
+			url:         "http://example.com/with whitespace",
+			alias:       gofakeit.Word(),
+			responseErr: "URL is not a valid URL",
+		},
 	}
 
 	for _, tc := range testCases {
@@ -93,7 +100,7 @@ func TestCreateRedirectDelete(t *testing.T) {
 
 			if tc.responseErr != "" {
 				resp.NotContainsKey("alias")
-				resp.Value("responseErr").String().IsEqual(tc.responseErr)
+				resp.Value("error").String().IsEqual(tc.responseErr)
 				return
 			}
 
@@ -107,6 +114,12 @@ func TestCreateRedirectDelete(t *testing.T) {
 			}
 
 			testRedirect(t, alias, tc.url)
+
+			respDelete := e.DELETE(fmt.Sprintf("/url%s", alias)).
+				WithBasicAuth("admin", "admin").Expect().
+				Status(http.StatusOK).JSON().Object()
+			respDelete.Value("status").String().IsEqual("OK")
+			testInvalidRedirect(t, alias)
 		})
 	}
 }
@@ -121,4 +134,13 @@ func testRedirect(t *testing.T, alias string, urlToRedirect string) {
 	redirectedURL, err := api.ProvokeRedirect(u.String())
 	require.NoError(t, err)
 	require.Equal(t, urlToRedirect, redirectedURL)
+}
+func testInvalidRedirect(t *testing.T, alias string) {
+	u := url.URL{
+		Scheme: "http",
+		Host:   host,
+		Path:   alias,
+	}
+	_, err := api.ProvokeRedirect(u.String())
+	require.ErrorIs(t, err, api.ErrInvalidStatusCode)
 }

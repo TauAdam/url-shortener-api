@@ -44,7 +44,7 @@ func TestSaveHandler(t *testing.T) {
 			name:        "Should Return Error For Invalid URL",
 			url:         "some invalid URL",
 			alias:       "new_alias",
-			responseErr: "URL is not a URL",
+			responseErr: "URL is not a valid URL",
 		},
 		{
 			name:        "Should Return Error For Already Existing url",
