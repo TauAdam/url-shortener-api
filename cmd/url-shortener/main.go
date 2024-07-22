@@ -13,6 +13,7 @@ import (
 	"vigilant-octo-spoon/internal/http_server/handlers/redirect"
 	middlewarelogger "vigilant-octo-spoon/internal/http_server/middlewares/logger"
 	"vigilant-octo-spoon/internal/storage/sqlite"
+	"vigilant-octo-spoon/lib/logger/handler/pretty_slog"
 	"vigilant-octo-spoon/lib/logger/sl"
 )
 
@@ -69,7 +70,7 @@ func NewLogger(env string) *slog.Logger {
 	var logger *slog.Logger
 	switch env {
 	case envLocal:
-		logger = slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelDebug}))
+		logger = setupPrettyLogger()
 	case envDev:
 		logger = slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelDebug}))
 	case evnProd:
@@ -79,4 +80,14 @@ func NewLogger(env string) *slog.Logger {
 
 	}
 	return logger
+}
+
+func setupPrettyLogger() *slog.Logger {
+	options := pretty_slog.PrettyHandlerOptions{
+		SlogOpts: &slog.HandlerOptions{
+			Level: slog.LevelDebug,
+		},
+	}
+	handler := options.NewPrettyHandler(os.Stdout)
+	return slog.New(handler)
 }
