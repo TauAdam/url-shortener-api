@@ -8,6 +8,7 @@ import (
 
 var (
 	ErrInvalidStatusCode = errors.New("invalid status code")
+	ErrAliasNotFound     = errors.New("alias not found")
 )
 
 func ProvokeRedirect(url string) (string, error) {
@@ -24,6 +25,10 @@ func ProvokeRedirect(url string) (string, error) {
 		return "", err
 	}
 	defer func() { _ = resp.Body.Close() }()
+
+	if resp.StatusCode == http.StatusNotFound {
+		return "", ErrAliasNotFound
+	}
 
 	if resp.StatusCode != http.StatusFound {
 		return "", fmt.Errorf("%s: %w: %d", op, ErrInvalidStatusCode, resp.StatusCode)
