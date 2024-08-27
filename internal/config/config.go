@@ -11,6 +11,8 @@ type Config struct {
 	Env              string `yaml:"env" env-required:"true"`
 	DatabaseURL      string `yaml:"database_url" env-required:"true"`
 	HttpServerConfig `yaml:"http_server_config"`
+	JWTSecret        string      `yaml:"jwt_secret" env-required:"true" env:"JWT_SECRET"`
+	Clients          ClientsList `yaml:"clients"`
 }
 
 type HttpServerConfig struct {
@@ -19,6 +21,17 @@ type HttpServerConfig struct {
 	IdleTimeout time.Duration `yaml:"idle_timeout" env-required:"true"`
 	User        string        `yaml:"user" env-required:"true"`
 	Password    string        `yaml:"password" env-required:"true" env:"SERVER_PASSWORD"`
+}
+
+type Client struct {
+	Address       string        `yaml:"address"`
+	Timeout       time.Duration `yaml:"timeout"`
+	RetriesNumber int           `yaml:"retries_number"`
+	IsSecure      bool          `yaml:"is_secure"`
+}
+
+type ClientsList struct {
+	SSO Client `yaml:"sso"`
 }
 
 func MustLoadEnv() *Config {

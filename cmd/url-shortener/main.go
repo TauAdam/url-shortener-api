@@ -1,9 +1,11 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	grpcClient "github.com/tauadam/url-shortener-api/internal/clients/sso/grpc"
 	"github.com/tauadam/url-shortener-api/internal/config"
 	deleteURL "github.com/tauadam/url-shortener-api/internal/http_server/handlers/alias/delete"
 	"github.com/tauadam/url-shortener-api/internal/http_server/handlers/alias/save"
@@ -20,9 +22,23 @@ import (
 func main() {
 	cfg := config.MustLoadEnv()
 	fmt.Println(cfg)
+
 	logger := NewLogger(cfg.Env)
+
 	logger.Info("starting server", slog.String("env config", cfg.Env))
 	logger.Debug("Debug messages")
+
+	_, err := grpcClient.New(
+		context.Background(),
+		logger,
+		cfg.Clients.SSO.Address,
+		cfg.Clients.SSO.RetriesNumber,
+		cfg.Clients.SSO.Timeout,
+	)
+	if err != nil {
+		logger.Error("error creating sso client", sl.Err(err))
+
+	}
 
 	storage, err := sqlite.New(cfg.DatabaseURL)
 	if err != nil {

@@ -41,6 +41,7 @@ func New(logger *slog.Logger, shortcutSaver ShortcutSaver) http.HandlerFunc {
 			render.JSON(w, r, response.Error("failed to parse request"))
 			return
 		}
+
 		logger.Info("successfully parsed request", slog.Any("req", req))
 		if err := validator.New().Struct(req); err != nil {
 			logger.Error("failed to validate request", sl.Err(err))

@@ -18,7 +18,13 @@ type Client struct {
 	log *slog.Logger
 }
 
-func New(ctx context.Context, log *slog.Logger, address string, timeout time.Duration, retriesNumber int) (*Client, error) {
+func New(
+	ctx context.Context,
+	log *slog.Logger,
+	address string,
+	retriesNumber int,
+	timeout time.Duration,
+) (*Client, error) {
 	const op = "grpc.New"
 
 	retryOptions := []retry.CallOption{

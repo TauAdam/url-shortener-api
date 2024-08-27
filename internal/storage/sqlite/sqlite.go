@@ -19,6 +19,8 @@ func New(dbURL string) (*Storage, error) {
 	if err != nil {
 		return nil, fmt.Errorf("%s: %w", op, err)
 	}
+
+	// simple schema migration
 	stmt, err := db.Prepare(`
 	CREATE TABLE IF NOT EXISTS url (
 		id INTEGER PRIMARY KEY,

@@ -6,3 +6,4 @@ http_server_config:
     idle_timeout: 50s
     user: "admin"
     password: "admin"
+jwt_secret: "batman"

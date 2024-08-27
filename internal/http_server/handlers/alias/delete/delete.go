@@ -31,16 +31,17 @@ func New(logger *slog.Logger, shortcutDeleter ShortcutDeleter) http.HandlerFunc 
 		}
 
 		err := shortcutDeleter.DeleteURL(alias)
-		if errors.Is(err, storage.ErrNotFound) {
-			logger.Info("URL for given alias not found", "alias", alias)
-			render.JSON(w, r, response.Error(storage.ErrNotFound.Error()))
-			return
-		}
 		if err != nil {
+			if errors.Is(err, storage.ErrNotFound) {
+				logger.Info("URL for given alias not found", "alias", alias)
+				render.JSON(w, r, response.Error(storage.ErrNotFound.Error()))
+				return
+			}
 			logger.Error("failed to delete shortcut", sl.Err(err))
 			render.JSON(w, r, response.Error("internal error"))
 			return
 		}
+
 		logger.Info("successfully deleted shortcut", "alias", alias)
 		response.Success()
 	}
