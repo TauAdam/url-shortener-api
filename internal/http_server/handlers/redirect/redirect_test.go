@@ -5,12 +5,12 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
+	"github.com/tauadam/url-shortener-api/internal/http_server/handlers/redirect"
+	"github.com/tauadam/url-shortener-api/internal/http_server/handlers/redirect/mocks"
+	"github.com/tauadam/url-shortener-api/lib/api"
+	"github.com/tauadam/url-shortener-api/lib/logger/handler/slogdiscard"
 	"net/http/httptest"
 	"testing"
-	"vigilant-octo-spoon/internal/http_server/handlers/redirect"
-	"vigilant-octo-spoon/internal/http_server/handlers/redirect/mocks"
-	"vigilant-octo-spoon/lib/api"
-	"vigilant-octo-spoon/lib/logger/handler/slogdiscard"
 )
 
 func TestRedirectHandler(t *testing.T) {

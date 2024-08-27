@@ -5,12 +5,12 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/render"
 	"github.com/go-playground/validator/v10"
+	"github.com/tauadam/url-shortener-api/internal/storage"
+	"github.com/tauadam/url-shortener-api/lib/api/response"
+	"github.com/tauadam/url-shortener-api/lib/logger/sl"
+	"github.com/tauadam/url-shortener-api/lib/random"
 	"log/slog"
 	"net/http"
-	"vigilant-octo-spoon/internal/storage"
-	"vigilant-octo-spoon/lib/api/response"
-	"vigilant-octo-spoon/lib/logger/sl"
-	"vigilant-octo-spoon/lib/random"
 )
 
 //go:generate go run github.com/vektra/mockery/v2 --name=ShortcutSaver

@@ -4,12 +4,12 @@ import (
 	"fmt"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
+	delete2 "github.com/tauadam/url-shortener-api/internal/http_server/handlers/alias/delete"
+	"github.com/tauadam/url-shortener-api/internal/http_server/handlers/alias/delete/mocks"
+	"github.com/tauadam/url-shortener-api/lib/logger/handler/slogdiscard"
 	"net/http"
 	"net/http/httptest"
 	"testing"
-	delete2 "vigilant-octo-spoon/internal/http_server/handlers/alias/delete"
-	"vigilant-octo-spoon/internal/http_server/handlers/alias/delete/mocks"
-	"vigilant-octo-spoon/lib/logger/handler/slogdiscard"
 )
 
 func TestDeleteHandler(t *testing.T) {

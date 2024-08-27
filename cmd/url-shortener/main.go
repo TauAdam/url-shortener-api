@@ -4,17 +4,17 @@ import (
 	"fmt"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/tauadam/url-shortener-api/internal/config"
+	deleteURL "github.com/tauadam/url-shortener-api/internal/http_server/handlers/alias/delete"
+	"github.com/tauadam/url-shortener-api/internal/http_server/handlers/alias/save"
+	"github.com/tauadam/url-shortener-api/internal/http_server/handlers/redirect"
+	middlewarelogger "github.com/tauadam/url-shortener-api/internal/http_server/middlewares/logger"
+	"github.com/tauadam/url-shortener-api/internal/storage/sqlite"
+	"github.com/tauadam/url-shortener-api/lib/logger/handler/pretty_slog"
+	"github.com/tauadam/url-shortener-api/lib/logger/sl"
 	"log/slog"
 	"net/http"
 	"os"
-	"vigilant-octo-spoon/internal/config"
-	deleteURL "vigilant-octo-spoon/internal/http_server/handlers/alias/delete"
-	"vigilant-octo-spoon/internal/http_server/handlers/alias/save"
-	"vigilant-octo-spoon/internal/http_server/handlers/redirect"
-	middlewarelogger "vigilant-octo-spoon/internal/http_server/middlewares/logger"
-	"vigilant-octo-spoon/internal/storage/sqlite"
-	"vigilant-octo-spoon/lib/logger/handler/pretty_slog"
-	"vigilant-octo-spoon/lib/logger/sl"
 )
 
 func main() {
@@ -38,7 +38,7 @@ func main() {
 
 	router.Route("/url", func(r chi.Router) {
 		r.Use(middleware.BasicAuth(
-			"vigilant-octo-spoon",
+			"url-shortener-api",
 			map[string]string{cfg.HttpServerConfig.User: cfg.HttpServerConfig.Password},
 		))
 		r.Post("/", save.New(logger, storage))

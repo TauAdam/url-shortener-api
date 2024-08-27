@@ -5,11 +5,11 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/render"
+	"github.com/tauadam/url-shortener-api/internal/storage"
+	"github.com/tauadam/url-shortener-api/lib/api/response"
+	"github.com/tauadam/url-shortener-api/lib/logger/sl"
 	"log/slog"
 	"net/http"
-	"vigilant-octo-spoon/internal/storage"
-	"vigilant-octo-spoon/lib/api/response"
-	"vigilant-octo-spoon/lib/logger/sl"
 )
 
 //go:generate go run github.com/vektra/mockery/v2 --name=ShortcutDeleter

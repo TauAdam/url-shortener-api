@@ -5,12 +5,12 @@ import (
 	"github.com/brianvoe/gofakeit/v7"
 	"github.com/gavv/httpexpect/v2"
 	"github.com/stretchr/testify/require"
+	"github.com/tauadam/url-shortener-api/internal/http_server/handlers/alias/save"
+	"github.com/tauadam/url-shortener-api/lib/api"
+	"github.com/tauadam/url-shortener-api/lib/random"
 	"net/http"
 	"net/url"
 	"testing"
-	"vigilant-octo-spoon/internal/http_server/handlers/alias/save"
-	"vigilant-octo-spoon/lib/api"
-	"vigilant-octo-spoon/lib/random"
 )
 
 const (

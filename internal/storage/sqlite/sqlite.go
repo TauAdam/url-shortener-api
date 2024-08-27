@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/mattn/go-sqlite3"
-	"vigilant-octo-spoon/internal/storage"
+	"github.com/tauadam/url-shortener-api/internal/storage"
 )
 
 type Storage struct {
