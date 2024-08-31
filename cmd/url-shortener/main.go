@@ -22,7 +22,6 @@ import (
 func main() {
 	cfg := config.MustLoadEnv()
 	fmt.Println(cfg)
-
 	logger := NewLogger(cfg.Env)
 
 	logger.Info("starting server", slog.String("env config", cfg.Env))
@@ -52,17 +51,13 @@ func main() {
 	router.Use(middleware.Recoverer)
 	router.Use(middleware.URLFormat)
 
-	router.Route("/url", func(r chi.Router) {
-		r.Use(middleware.BasicAuth(
-			"url-shortener-api",
-			map[string]string{cfg.HttpServerConfig.User: cfg.HttpServerConfig.Password},
-		))
-		r.Post("/", save.New(logger, storage))
-		r.Delete("/{alias}", deleteURL.New(logger, storage))
-	})
+	router.Route("/url", ManageUrl(cfg, logger, storage))
 	router.Get("/{alias}", redirect.New(logger, storage))
 
-	logger.Info("starting server on address", slog.String("address", cfg.Address))
+	logger.Info(
+		"starting server on address",
+		slog.String("address", cfg.Address),
+	)
 
 	server := &http.Server{
 		Addr:         cfg.Address,
@@ -73,6 +68,21 @@ func main() {
 	}
 	if err := server.ListenAndServe(); err != nil {
 		logger.Error("error starting server", sl.Err(err))
+	}
+}
+
+func ManageUrl(
+	cfg *config.Config,
+	logger *slog.Logger,
+	storage *sqlite.Storage,
+) func(r chi.Router) {
+	return func(r chi.Router) {
+		r.Use(middleware.BasicAuth(
+			"url-shortener-api",
+			map[string]string{cfg.HttpServerConfig.User: cfg.HttpServerConfig.Password},
+		))
+		r.Post("/", save.New(logger, storage))
+		r.Delete("/{alias}", deleteURL.New(logger, storage))
 	}
 }
 

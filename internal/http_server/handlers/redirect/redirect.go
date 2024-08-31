@@ -30,19 +30,19 @@ func New(logger *slog.Logger, urlGetter URLGetter) http.HandlerFunc {
 		alias := chi.URLParam(r, "alias")
 		if len(alias) == 0 {
 			logger.Info("invalid alias")
-			render.JSON(w, r, response.Error("redirect: invalid alias"))
+			render.JSON(w, r, response.Fail("redirect: invalid alias"))
 			return
 		}
 
 		url, err := urlGetter.GetURL(alias)
 		if errors.Is(err, storage.ErrNotFound) {
 			logger.Info("URL for given alias not found", "alias", alias)
-			render.JSON(w, r, response.Error(storage.ErrNotFound.Error()))
+			render.JSON(w, r, response.Fail(storage.ErrNotFound.Error()))
 			return
 		}
 		if err != nil {
 			logger.Error("failed to get url", sl.Err(err))
-			render.JSON(w, r, response.Error("internal error"))
+			render.JSON(w, r, response.Fail("internal error"))
 			return
 		}
 

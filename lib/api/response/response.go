@@ -19,7 +19,7 @@ const (
 func Success() Response {
 	return Response{Status: StatusSuccess}
 }
-func Error(message string) Response {
+func Fail(message string) Response {
 	return Response{
 		Status: StatusError,
 		Error:  message,

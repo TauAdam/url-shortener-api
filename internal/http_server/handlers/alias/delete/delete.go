@@ -21,12 +21,15 @@ func New(logger *slog.Logger, shortcutDeleter ShortcutDeleter) http.HandlerFunc 
 	return func(w http.ResponseWriter, r *http.Request) {
 		const op = "handler.shortcut.delete.New"
 
-		logger := logger.With(slog.String("op", op), slog.String("request_id", middleware.GetReqID(r.Context())))
+		logger := logger.With(
+			slog.String("op", op),
+			slog.String("request_id", middleware.GetReqID(r.Context())),
+		)
 
 		alias := chi.URLParam(r, "alias")
 		if len(alias) == 0 {
 			logger.Info("invalid alias")
-			render.JSON(w, r, response.Error("redirect: invalid alias"))
+			render.JSON(w, r, response.Fail("redirect: invalid alias"))
 			return
 		}
 
@@ -34,11 +37,11 @@ func New(logger *slog.Logger, shortcutDeleter ShortcutDeleter) http.HandlerFunc 
 		if err != nil {
 			if errors.Is(err, storage.ErrNotFound) {
 				logger.Info("URL for given alias not found", "alias", alias)
-				render.JSON(w, r, response.Error(storage.ErrNotFound.Error()))
+				render.JSON(w, r, response.Fail(storage.ErrNotFound.Error()))
 				return
 			}
 			logger.Error("failed to delete shortcut", sl.Err(err))
-			render.JSON(w, r, response.Error("internal error"))
+			render.JSON(w, r, response.Fail("internal error"))
 			return
 		}
 

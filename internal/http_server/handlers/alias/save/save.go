@@ -38,7 +38,7 @@ func New(logger *slog.Logger, shortcutSaver ShortcutSaver) http.HandlerFunc {
 		err := render.DecodeJSON(r.Body, &req)
 		if err != nil {
 			logger.Error("failed to parse request", sl.Err(err))
-			render.JSON(w, r, response.Error("failed to parse request"))
+			render.JSON(w, r, response.Fail("failed to parse request"))
 			return
 		}
 
@@ -61,12 +61,12 @@ func New(logger *slog.Logger, shortcutSaver ShortcutSaver) http.HandlerFunc {
 		id, err := shortcutSaver.SaveShortcut(req.URL, req.Alias)
 		if errors.Is(err, storage.ErrAlreadyExists) {
 			logger.Info("URL already exists", slog.String("url", req.URL))
-			render.JSON(w, r, response.Error("URL already exists"))
+			render.JSON(w, r, response.Fail("URL already exists"))
 			return
 		}
 		if err != nil {
 			logger.Error("failed to save url", sl.Err(err))
-			render.JSON(w, r, response.Error("failed to save url"))
+			render.JSON(w, r, response.Fail("failed to save url"))
 			return
 		}
 		logger.Info("successfully saved url", slog.Int64("id", id))
