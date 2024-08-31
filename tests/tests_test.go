@@ -57,11 +57,6 @@ func TestCreateRedirectDelete(t *testing.T) {
 		alias       string
 		responseErr string
 	}{
-		//{
-		//	name:  "Without alias",
-		//	url:   gofakeit.URL(),
-		//	alias: "",
-		//},
 		{
 			name:  "Valid URL",
 			url:   gofakeit.URL(),
@@ -113,7 +108,6 @@ func TestCreateRedirectDelete(t *testing.T) {
 				alias = resp.Value("alias").String().Raw()
 			}
 			if tc.alias != "" {
-
 				testRedirect(t, alias, tc.url)
 				return
 			}
